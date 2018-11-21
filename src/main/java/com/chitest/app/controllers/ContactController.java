@@ -48,7 +48,7 @@ public class ContactController {
         }
     }
 
-    @PutMapping(path = "/contacts", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/contacts", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid @RequestBody Contact contact, Principal principal) {
         User user = userService.findByLogin(principal.getName());
@@ -62,7 +62,7 @@ public class ContactController {
         }
     }
 
-    @PostMapping(path = "/contacts/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/contacts/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable("id") Integer contactId, @Valid @RequestBody Contact contactNewData) {
         Optional<Contact> contactInDb = contactService.findById(contactId);
 
