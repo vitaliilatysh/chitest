@@ -49,4 +49,7 @@ public class EmailService  {
     public Email save(Email email) {
         return emailRepository.save(email);
     }
+    public void delete(Email email){
+        emailRepository.delete(email);
+    }
 }

@@ -43,4 +43,8 @@ public class PhoneService {
     public Phone save(Phone phone) {
         return phoneRepository.save(phone);
     }
+
+    public void delete(Phone phone){
+        phoneRepository.delete(phone);
+    }
 }

@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class ContactService {
@@ -137,14 +134,53 @@ public class ContactService {
                 }
             }
 
-            List<Email> emails = new ArrayList<>();
-            for (Email email : newContactData.getEmails()) {
-                if(contact.getEmails().contains(email))
-                email.setContact(contact);
-                if (emailService.save(email) == null) {
-                    throw new DuplicateEmailException("Email:" + email.getEmail() + " already in the list");
+            for (Phone phone : newContactData.getPhones()) {
+                Phone phoneInDb = phoneService.findByPhone(phone.getPhone());
+                if (phoneInDb != null && !contact.getPhones().contains(phoneInDb)) {
+                    throw new PhoneAlreadyExistException(phone.getPhone());
                 }
             }
+
+            List<Email> tempEmails = new ArrayList<>(contact.getEmails());
+            Set<Email> newEmails = new HashSet<>();
+            tempEmails.removeAll(newContactData.getEmails());
+            for (Email email : newContactData.getEmails()) {
+                if(!contact.getEmails().contains(email)) {
+                    email.setContact(contact);
+                    Email savedEmail = emailService.save(email);
+                    if (savedEmail == null) {
+                        throw new DuplicateEmailException("Email:" + email.getEmail() + " already in the list");
+                    } else{
+                        newEmails.add(savedEmail);
+                    }
+                }
+            }
+
+            List<Phone> tempPhones = new ArrayList<>(contact.getPhones());
+            Set<Phone> newPhones = new HashSet<>();
+            tempPhones.removeAll(newContactData.getPhones());
+            for (Phone phone : newContactData.getPhones()) {
+                if(!contact.getPhones().contains(phone)) {
+                    phone.setContact(contact);
+                    Phone savedPhone = phoneService.save(phone);
+                    if (savedPhone == null) {
+                        throw new DuplicateEmailException("Phone:" + phone.getPhone() + " already in the list");
+                    } else{
+                        newPhones.add(savedPhone);
+                    }
+                }
+            }
+
+            for(Email email: tempEmails){
+                emailService.delete(email);
+            }
+
+            for(Phone phone: tempPhones){
+                phoneService.delete(phone);
+            }
+
+            contact.setEmails(newEmails);
+            contact.setPhones(newPhones);
 
             contactRepository.save(contact);
         }
