@@ -1,0 +1,44 @@
+DROP SCHEMA IF EXISTS chitest_db;
+CREATE SCHEMA IF NOT EXISTS chitest_db
+  CHARACTER SET utf8
+  COLLATE utf8_unicode_ci;
+USE
+  chitest_db;
+
+CREATE TABLE users
+(
+  id       INTEGER     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  login    VARCHAR(15) NOT NULL UNIQUE,
+  password VARCHAR(60) NOT NULL
+);
+
+CREATE TABLE contacts
+(
+  id      INTEGER     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name    VARCHAR(50) NOT NULL UNIQUE,
+  user_id INTEGER     NOT NULL REFERENCES users (id)
+);
+
+CREATE TABLE emails
+(
+  id         INTEGER     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email      VARCHAR(35) NOT NULL UNIQUE,
+  contact_id INTEGER     NOT NULL,
+  FOREIGN KEY (contact_id)
+    REFERENCES contacts (id)
+      ON DELETE CASCADE
+      ON UPDATE RESTRICT
+);
+
+CREATE TABLE phones
+(
+  id         INTEGER     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  phone      VARCHAR(13) NOT NULL UNIQUE,
+  contact_id INTEGER     NOT NULL,
+  FOREIGN KEY (contact_id)
+    REFERENCES contacts (id)
+      ON DELETE CASCADE
+      ON UPDATE RESTRICT
+);
+
+
