@@ -9,6 +9,6 @@ import javax.validation.constraints.Size;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class ContactAlreadyExistException extends RuntimeException {
     public ContactAlreadyExistException(String contactName) {
-        super("Contact with such  name:" + contactName + " already exist");
+        super("Contact with such name:" + contactName + " already exist");
     }
 }
