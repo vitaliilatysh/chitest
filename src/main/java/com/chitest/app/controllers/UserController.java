@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
@@ -23,10 +24,10 @@ public class UserController {
 
     @PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Map registerUser(@RequestBody Map<String, ?> input) {
+    public Map registerUser(@Valid @RequestBody User newUser) {
 
-        String login = (String) input.get("login");
-        String pass = (String) input.get("password");
+        String login = newUser.getLogin();
+        String pass = newUser.getPassword();
         User user = userService.findByLogin(login);
         if(user != null){
             throw new UserAlreadyExistException(user.getLogin());
